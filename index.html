@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link href="style.css" rel="stylesheet" />
+    <script src="scripts.js"></script>
+    <body>
+      <div class="main_content">
+        <div class="image_background">
+          <div class="input_search">
+            <input
+              style="width: 200px"
+              placeholder="Enter artist or song name..."
+              value=""
+              id="search_query"
+              onkeypress="onHandleChange(event)"
+              type="text"
+            />
+            <button onclick="onSearch()">Search</button>
+          </div>
+        </div>
+        <div id="app"></div>
+      </div>
+    </body>
+  </head>
+</html>
