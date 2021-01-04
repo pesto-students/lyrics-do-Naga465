@@ -35,3 +35,6 @@ https://api.lyrics.ovh/suggest/inputQuery
 # Commands
 
 - Run `npm run develop` to run app locally
+
+# Deploy 
+- Hosted on  https://flamboyant-swirles-8e8ccd.netlify.app/
