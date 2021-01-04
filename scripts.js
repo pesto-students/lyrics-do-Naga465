@@ -15,10 +15,10 @@ function onSearch() {
 
 function renderLyricsSuggesstions(response) {
   let bodyJsx = "";
-  const { data = [], next = null, prev = null, total } = response;
+  const { data = [], next, prev, total } = response;
   let footerJsx = getLyricsFooter(prev, next);
   data.forEach((item) => {
-    const { artist = {}, title, id, next, prev } = item;
+    const { artist = {}, title, id } = item;
     bodyJsx += `<div class='lyric-list' id = ${id}> 
         <div>
            <label class="artist_name">${artist.name || ""}</label> - 
@@ -26,25 +26,26 @@ function renderLyricsSuggesstions(response) {
         </div> 
         <button onclick = "getLyrics('${
           artist.name
-        }','${title}')">Show Lyrics</button>
+        }','${title}','${prev}')">Show Lyrics</button>
     </div>`;
   });
   return `<div class="lyrics-list-content">${bodyJsx}${footerJsx}</div>`;
 }
 
-function getLyrics(artist, title) {
+function getLyrics(artist, title, prev) {
   let endPoint = `/v1/${artist}/${title}`;
   callApi(
     BASE_URL + endPoint,
     { method: "GET" },
     renderLyricsDetails,
     artist,
-    title
+    title,
+    prev
   );
 }
 
 function renderLyricsDetails(data, ...props) {
-  const [artist, title] = props[0];
+  const [artist, title, prev] = props || [];
   let { lyrics } = data || {};
   return `<div class='lyric-details'>
             <div class='lyric-header'>
@@ -52,6 +53,7 @@ function renderLyricsDetails(data, ...props) {
               <h2>${title}</h2>
             </div> 
             <p class="lyrics">${lyrics || "No Lyrics added."}</p>
+            <button onclick = "goToPage('${prev}')">BACK</button>
           </div>`;
 }
 
@@ -68,6 +70,10 @@ function getLyricsFooter(prev, next) {
 }
 
 function goToPage(PAGE_URL) {
+  if (!PAGE_URL || PAGE_URL === "undefined") {
+    onSearch();
+    return;
+  }
   callApi(
     PROXY_URL + PAGE_URL,
     { method: "GET", redirect: "follow" },
@@ -112,7 +118,7 @@ function updateDom(callBack) {
     }
   }
   return function (data, ...args) {
-    let jsx = callBack(data, args);
+    let jsx = callBack(data, ...args);
     node.insertAdjacentHTML("afterbegin", jsx);
   };
 }
